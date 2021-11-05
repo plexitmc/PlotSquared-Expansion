@@ -1,44 +1,50 @@
 package com.github.intellectualsites.expansions.plotsquared;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class PlotSquaredExpansion extends PlaceholderExpansion {
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.jetbrains.annotations.NotNull;
+
+public final class PlotSquaredExpansion extends PlaceholderExpansion {
     private PlotSquaredApiInterface api;
 
     public PlotSquaredExpansion() {
         this.api = null;
     }
 
-    public boolean canRegister() {
-        return Bukkit.getPluginManager().getPlugin(this.getPlugin()) != null;
-    }
-
+    @NotNull
+    @Override
     public String getAuthor() {
-        return "IronApollo";
+        return "IronApollo, SirBlobman";
     }
-
+    
+    @NotNull
+    @Override
     public String getIdentifier() {
         return "plotsquared";
     }
 
-    public String getPlugin() {
+    @NotNull
+    @Override
+    public String getRequiredPlugin() {
         return "PlotSquared";
     }
 
+    @NotNull
+    @Override
     public String getVersion() {
-        return "2.3";
+        return "3.0";
     }
-
-    public boolean register() {
+    
+    @Override
+    public boolean canRegister() {
         this.api = determineApi();
-        return this.api != null && PlaceholderAPI.registerPlaceholderHook(this.getIdentifier(), this);
+        return (this.api != null);
     }
 
-    public String onPlaceholderRequest(final Player p, final String identifier) {
-        return this.api.onPlaceHolderRequest(p, identifier);
+    @Override
+    public String onPlaceholderRequest(Player player, @NotNull String placeholder) {
+        return this.api.onPlaceHolderRequest(player, placeholder);
     }
 
     private PlotSquaredApiInterface determineApi() {
