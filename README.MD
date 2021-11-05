@@ -1,21 +1,22 @@
 # PlotSquared-Expansion
+
 PlotSquared expansion for PlaceholderAPI
 
 This project is intended to be an updated and backwards compatible extension for PlotSquared.
 
-This expansion works for both the old and new API's of PlotSquared.
-
-### Downloads
-[Download from the eCloud](https://api.extendedclip.com/expansions/plotsquared/) <br>
-Download ingame: `/papi ecloud download PlotSquared` followed by `/papi reload`
+This expansion works for both the old (v3) and new (v4) API's of PlotSquared.
 
 ### Note to FeatherBoard users
-FeatherBoard does not use the regular PlaceholderAPI setup. Therefore, you must edit the placeholders a bit, check the example below:    
-`{placeholderapi_plotsquared_currentplot_alias}` <br>
+
+FeatherBoard does not use the regular PlaceholderAPI setup.
+Therefore, you must edit the placeholders a bit, check the example below:
+```
+{placeholderapi_plotsquared_currentplot_alias}
+```
 You need to add `placeholderapi` in front of all placeholders.
 
 ### Following placeholders are available:
-```
+
 - %plotsquared_currentplot_alias%
 - %plotsquared_currentplot_owner%
 - %plotsquared_currentplot_members%
@@ -34,4 +35,3 @@ You need to add `placeholderapi` in front of all placeholders.
     - %plotsquared_currentplot_y%
 - %plotsquared_currentplot_rating%
 - %plotsquared_currentplot_biome%
-```
