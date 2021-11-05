@@ -17,55 +17,55 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
     public PlotSquaredApiOld() {
         this.api = PS.get();
     }
-
+    
     @Override
     public String onPlaceHolderRequest(Player player, String placeholder) {
-        if (this.api == null || player == null) {
+        if(this.api == null || player == null) {
             return "";
         }
         
         String playerName = player.getName();
         PlotPlayer plotPlayer = PlotPlayer.get(playerName);
-        if (plotPlayer == null) {
+        if(plotPlayer == null) {
             return "";
         }
-
-        if (placeholder.startsWith("has_plot_")) {
-            if (placeholder.split("has_plot_").length != 2) {
+        
+        if(placeholder.startsWith("has_plot_")) {
+            if(placeholder.split("has_plot_").length != 2) {
                 return null;
             }
-
+            
             placeholder = placeholder.split("has_plot_")[1];
             return plotPlayer.getPlotCount(placeholder) > 0 ? PlaceholderAPIPlugin.booleanTrue() :
                     PlaceholderAPIPlugin.booleanFalse();
         }
-
-        if (placeholder.startsWith("plot_count_")) {
-            if (placeholder.split("plot_count_").length != 2) {
+        
+        if(placeholder.startsWith("plot_count_")) {
+            if(placeholder.split("plot_count_").length != 2) {
                 return null;
             }
-
+            
             placeholder = placeholder.split("plot_count_")[1];
             return String.valueOf(plotPlayer.getPlotCount(placeholder));
         }
-
-        switch (placeholder) {
+        
+        switch(placeholder) {
             case "currentplot_alias": {
                 return (plotPlayer.getCurrentPlot() != null) ? plotPlayer.getCurrentPlot().getAlias() : "";
             }
             
             case "currentplot_owner": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
                 Set<UUID> ownerSet = plotPlayer.getCurrentPlot().getOwners();
-                if (ownerSet == null || ownerSet.isEmpty()) {
+                if(ownerSet == null || ownerSet.isEmpty()) {
                     return "";
                 }
                 
                 UUID firstOwnerId = (UUID) ownerSet.toArray()[0];
-                if (firstOwnerId == null) {
+                if(firstOwnerId == null) {
                     return "";
                 }
                 
@@ -92,11 +92,11 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_members": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
-                if (plotPlayer.getCurrentPlot().getMembers() == null &&
+                if(plotPlayer.getCurrentPlot().getMembers() == null &&
                         plotPlayer.getCurrentPlot().getTrusted() == null) {
                     return "0";
                 }
@@ -106,11 +106,11 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_members_added": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
-                if (plotPlayer.getCurrentPlot().getMembers() == null) {
+                if(plotPlayer.getCurrentPlot().getMembers() == null) {
                     return "0";
                 }
                 
@@ -118,11 +118,11 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_members_trusted": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
-                if (plotPlayer.getCurrentPlot().getTrusted() == null) {
+                if(plotPlayer.getCurrentPlot().getTrusted() == null) {
                     return "0";
                 }
                 
@@ -130,11 +130,11 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_members_denied": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
-                if (plotPlayer.getCurrentPlot().getDenied() == null) {
+                if(plotPlayer.getCurrentPlot().getDenied() == null) {
                     return "0";
                 }
                 
@@ -148,7 +148,7 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_x": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
@@ -156,7 +156,7 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_y": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
@@ -164,7 +164,7 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_xy": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
@@ -172,7 +172,7 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_rating": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
@@ -180,14 +180,15 @@ public class PlotSquaredApiOld implements PlotSquaredApiInterface {
             }
             
             case "currentplot_biome": {
-                if (plotPlayer.getCurrentPlot() == null) {
+                if(plotPlayer.getCurrentPlot() == null) {
                     return "";
                 }
                 
                 return String.valueOf(plotPlayer.getCurrentPlot().getBiome());
             }
             
-            default: break;
+            default:
+                break;
         }
         
         return null;
