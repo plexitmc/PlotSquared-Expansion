@@ -1,32 +1,32 @@
 package com.github.intellectualsites.expansions.plotsquared;
 
-import java.util.Set;
-import java.util.UUID;
-
+import com.plotsquared.core.PlotAPI;
+import com.plotsquared.core.player.PlotPlayer;
+import com.plotsquared.core.plot.Plot;
+import com.plotsquared.core.uuid.UUIDPipeline;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.github.intellectualsites.plotsquared.plot.PlotSquared;
-import com.github.intellectualsites.plotsquared.plot.object.Plot;
-import com.github.intellectualsites.plotsquared.plot.object.PlotPlayer;
-import com.github.intellectualsites.plotsquared.plot.util.UUIDHandler;
-import me.clip.placeholderapi.PlaceholderAPIPlugin;
+import java.util.Set;
+import java.util.UUID;
 
 public final class PlotSquaredApiNew implements PlotSquaredApiInterface {
-    private final PlotSquared api;
+    private final PlotAPI api;
+    private final UUIDPipeline pipeline;
     
     public PlotSquaredApiNew() {
-        this.api = PlotSquared.get();
+        this.api = new PlotAPI();
+        this.pipeline = this.api.getPlotSquared().getBackgroundUUIDPipeline();
     }
     
     @Override
     public String onPlaceHolderRequest(Player player, String placeholder) {
-        if(this.api == null || player == null) {
+        if(player == null) {
             return "";
         }
-        
-        String playerName = player.getName();
-        PlotPlayer plotPlayer = PlotPlayer.get(playerName);
+
+        PlotPlayer<?> plotPlayer = api.wrapPlayer(player.getUniqueId());
         if(plotPlayer == null) {
             return "";
         }
@@ -50,147 +50,105 @@ public final class PlotSquaredApiNew implements PlotSquaredApiInterface {
             placeholder = placeholder.split("plot_count_")[1];
             return String.valueOf(plotPlayer.getPlotCount(placeholder));
         }
-        
-        switch(placeholder) {
-            case "currentplot_alias": {
-                return (plotPlayer.getCurrentPlot() != null) ? plotPlayer.getCurrentPlot().getAlias() : "";
+
+        switch (placeholder) {
+            case "is_on_plot" -> {
+                return String.valueOf(plotPlayer.getCurrentPlot() != null);
             }
-            
-            case "currentplot_owner": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
+            case "currentplot_alias" -> {
+                return (plotPlayer.getCurrentPlot() != null) ? plotPlayer.getCurrentPlot().getAlias() : "-";
+            }
+            case "currentplot_owner" -> {
+                if (plotPlayer.getCurrentPlot() == null) {
+                    return "-";
                 }
-                
+
                 Set<UUID> plotOwners = plotPlayer.getCurrentPlot().getOwners();
-                if(plotOwners == null || plotOwners.isEmpty()) {
-                    return "";
+                if (plotOwners.isEmpty()) {
+                    return "-";
                 }
-                
+
                 UUID firstOwnerId = (UUID) plotOwners.toArray()[0];
-                if(firstOwnerId == null) {
-                    return "";
+                if (firstOwnerId == null) {
+                    return "-";
                 }
-                
-                String ownerName = UUIDHandler.getName(firstOwnerId);
+
+                String ownerName = pipeline.getSingle(firstOwnerId, 1000);
                 return (ownerName != null) ? ownerName
                         : ((Bukkit.getOfflinePlayer(firstOwnerId) != null) ?
-                        Bukkit.getOfflinePlayer(firstOwnerId).getName() : "unknown");
+                        Bukkit.getOfflinePlayer(firstOwnerId).getName() : "ukendt");
             }
-            
-            case "currentplot_world": {
+            case "currentplot_world" -> {
                 return player.getWorld().getName();
             }
-            
-            case "has_plot": {
-                return (plotPlayer.getPlotCount() > 0) ? PlaceholderAPIPlugin.booleanTrue()
-                        : PlaceholderAPIPlugin.booleanFalse();
+            case "has_plot" -> {
+                return (plotPlayer.getPlotCount() > 0) ? "&a&l\u2714" : "&c&l\u2718";
             }
-            
-            case "allowed_plot_count": {
+            case "allowed_plot_count" -> {
                 return String.valueOf(plotPlayer.getAllowedPlots());
             }
-            
-            case "plot_count": {
+            case "plot_count" -> {
                 return String.valueOf(plotPlayer.getPlotCount());
             }
-            
-            case "currentplot_members": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
-                }
-                
-                if(plotPlayer.getCurrentPlot().getMembers() == null &&
-                        plotPlayer.getCurrentPlot().getTrusted() == null) {
-                    return "0";
-                }
-                
+            case "currentplot_members" -> {
+                if (plotPlayer.getCurrentPlot() == null)
+                    return "-";
                 return String.valueOf(plotPlayer.getCurrentPlot().getMembers().size()
                         + plotPlayer.getCurrentPlot().getTrusted().size());
             }
-            
-            case "currentplot_members_added": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
-                }
-                
-                if(plotPlayer.getCurrentPlot().getMembers() == null) {
-                    return "0";
-                }
-                
+            case "currentplot_members_added" -> {
+                if (plotPlayer.getCurrentPlot() == null)
+                    return "-";
                 return String.valueOf(plotPlayer.getCurrentPlot().getMembers().size());
             }
-            
-            case "currentplot_members_trusted": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
+            case "currentplot_members_trusted" -> {
+                if (plotPlayer.getCurrentPlot() == null) {
+                    return "-";
                 }
-                
-                if(plotPlayer.getCurrentPlot().getTrusted() == null) {
-                    return "0";
-                }
-                
+
                 return String.valueOf(currentPlot.getTrusted().size());
             }
-            
-            case "currentplot_members_denied": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
+            case "currentplot_members_denied" -> {
+                if (plotPlayer.getCurrentPlot() == null) {
+                    return "-";
                 }
-                
-                if(plotPlayer.getCurrentPlot().getDenied() == null) {
-                    return "0";
-                }
-                
+
                 return String.valueOf(plotPlayer.getCurrentPlot().getDenied().size());
             }
-            
-            case "has_build_rights": {
+            case "has_build_rights" -> {
                 return (plotPlayer.getCurrentPlot() != null) ?
-                        ((plotPlayer.getCurrentPlot().isAdded(plotPlayer.getUUID())) ?
-                                PlaceholderAPIPlugin.booleanTrue() : PlaceholderAPIPlugin.booleanFalse()) : "";
+                        ((plotPlayer.getCurrentPlot().isAdded(plotPlayer.getUUID())) ? "&a&l\u2714" : "&c&l\u2718") : "&c&l\u2718";
             }
-            
-            case "currentplot_x": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
+            case "currentplot_x" -> {
+                if (plotPlayer.getCurrentPlot() == null) {
+                    return "-";
                 }
-                
-                return String.valueOf(currentPlot.getId().x);
+
+                return String.valueOf(currentPlot.getId().getX());
             }
-            
-            case "currentplot_y": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
+            case "currentplot_y" -> {
+                if (plotPlayer.getCurrentPlot() == null) {
+                    return "-";
                 }
-                
-                return String.valueOf(currentPlot.getId().y);
+
+                return String.valueOf(currentPlot.getId().getY());
             }
-            
-            case "currentplot_xy": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
+            case "currentplot_xy" -> {
+                if (plotPlayer.getCurrentPlot() == null) {
+                    return "-";
                 }
-                
-                return plotPlayer.getCurrentPlot().getId().x + ";" + plotPlayer.getCurrentPlot().getId().y;
+
+                return plotPlayer.getCurrentPlot().getId().getX() + ";" + plotPlayer.getCurrentPlot().getId().getY();
             }
-            
-            case "currentplot_rating": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
+            case "currentplot_rating" -> {
+                if (plotPlayer.getCurrentPlot() == null) {
+                    return "-";
                 }
-                
+
                 return String.valueOf(currentPlot.getAverageRating());
             }
-            case "currentplot_biome": {
-                if(plotPlayer.getCurrentPlot() == null) {
-                    return "";
-                }
-                
-                return currentPlot.getBiome() + "";
+            default -> {
             }
-            
-            default:
-                break;
         }
         
         return null;

@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 repositories {
     mavenLocal()
@@ -18,18 +18,8 @@ repositories {
     }
 
     maven {
-        name "IntellectualSites Releases"
-        url "https://mvn.intellectualsites.com/content/repositories/releases/"
-    }
-
-    maven {
         name "PlaceholderAPI Repository"
         url "https://repo.extendedclip.com/content/repositories/placeholderapi/"
-    }
-
-    maven {
-        name "SirBlobman Public Repository"
-        url "https://nexus.sirblobman.xyz/repository/public/"
     }
 
     maven {
@@ -44,15 +34,7 @@ dependencies {
     compileOnly group: 'me.clip', name: 'placeholderapi', version: '2.10.10'
     compileOnly 'com.sk89q.worldedit:worldedit-core:7.2.7'
 
-    // PlotSquared 3
-    compileOnly(group: 'com.plotsquared', name: 'plotsquared-bukkit', version: '3.5.0-SNAPSHOT') {
-        exclude(module: 'worldedit-core')
-    }
-
-    // PlotSquared 4
-    compileOnly(group: 'com.github.intellectualsites.plotsquared', name: 'PlotSquared-API', version: '4.514') {
-        exclude(module: 'worldedit-core')
-    }
+    compileOnly("com.plotsquared:PlotSquared-Core:6.6.3")
 }
 
 clean.doFirst {

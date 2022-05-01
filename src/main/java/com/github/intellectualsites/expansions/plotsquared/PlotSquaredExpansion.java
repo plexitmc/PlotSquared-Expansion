@@ -51,11 +51,7 @@ public final class PlotSquaredExpansion extends PlaceholderExpansion {
         try {
             return new PlotSquaredApiNew();
         } catch(NoClassDefFoundError e) {
-            try {
-                return new PlotSquaredApiOld();
-            } catch(NoClassDefFoundError e1) {
-                return null;
-            }
+            return null;
         }
     }
 }
